@@ -1,3 +1,5 @@
+var url = require("url");
+var querystring = require("querystring");
 var User = require("./modules/User");
 var Teacher = require("./modules/Teacher");
 var FileIO = require("./modules/FileIO");
@@ -29,8 +31,37 @@ module.exports = {
 		FileIO.read("./views/register.html", recall);
 	},
 	login: function(request, response) {
-		var recall = getRecall(request, response);
-		FileIO.read("./views/login.html", recall);
+		// get method
+		// var params = url.parse(request.url, true).query;
+		// if (params["email"]) {
+		// 	console.log("Email: " + params["email"]);
+		// 	console.log("Password: " + params["password"]);
+		// }
+
+		// post method
+		var payload = "";
+		request.on("data", function(chunck) {
+			payload += chunck;
+		});
+		request.on("end", function() {
+			payload = querystring.parse(payload);
+			if (payload["email"]) {
+				console.log("Email: " + payload["email"]);
+				console.log("Password: " + payload["password"]);
+
+				function recall(data) {
+					var dataStr = data.toString();
+					Object.keys(payload).map(function(key, index) {
+						var re = new RegExp("{" + key + "}", "g");
+						dataStr = dataStr.replace(re, payload[key]);
+					});
+					response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+					response.write(dataStr);
+					response.end();
+				}
+				FileIO.read("./views/login.html", recall);
+			}
+		})
 	},
 	loginSync: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});

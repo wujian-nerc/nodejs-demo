@@ -6,7 +6,7 @@ module.exports = {
 			if (error) {
 				console.log("read file: " + path + " failed, error: " + error);
 			} else {
-				console.log(data);
+				// console.log(data);
 				console.log("async method over!");
 				recall(data);
 			}

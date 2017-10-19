@@ -6,7 +6,7 @@ var utils = require("./modules/utils");
 http.createServer(function(request, response) {
 	// filter second request
 	if (request.url !== "/favicon.ico") {
-		console.log(utils.getCurrentTime(), "request from", utils.getClientIp(request));
+		console.log(utils.getCurrentTime(), request.url);
 
 		var pathname = url.parse(request.url).pathname;
 		pathname = pathname.replace(/\//, '');
