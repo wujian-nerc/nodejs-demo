@@ -44,24 +44,27 @@ module.exports = {
 			payload += chunck;
 		});
 		request.on("end", function() {
+			console.log("request end", payload)
 			payload = querystring.parse(payload);
-			if (payload["email"]) {
-				console.log("Email: " + payload["email"]);
-				console.log("Password: " + payload["password"]);
+			console.log("Email: " + payload["email"]);
+			console.log("Password: " + payload["password"]);
 
-				function recall(data) {
-					var dataStr = data.toString();
-					Object.keys(payload).map(function(key, index) {
-						var re = new RegExp("{" + key + "}", "g");
-						dataStr = dataStr.replace(re, payload[key]);
-					});
-					response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
-					response.write(dataStr);
-					response.end();
-				}
-				FileIO.read("./views/login.html", recall);
+			function recall(data) {
+				var dataStr = data.toString();
+				Object.keys(payload).map(function(key, index) {
+					var re = new RegExp("{" + key + "}", "g");
+					dataStr = dataStr.replace(re, payload[key]);
+				});
+
+				response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+				response.write(dataStr);
+				response.end();
 			}
-		})
+			FileIO.read("./views/login.html", recall);
+		});
+
+		// var recall = getRecall(request, response);
+		// FileIO.read("./views/login.html", recall);
 	},
 	loginSync: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
@@ -70,7 +73,7 @@ module.exports = {
 		response.write(data);
 		response.end();
 	},
-	write: function(require, response) {
+	write: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
 		FileIO.write("./views/write.html", "write page!");
 		response.write("write success!");
@@ -82,12 +85,16 @@ module.exports = {
 		response.write("writeSync success!");
 		response.end();
 	},
-	showImage: function(require, response) {
+	showImage: function(request, response) {
 		response.writeHead(200, {"content-Type": "image/jpeg"});
 		function recall(data) {
 			response.write(data, "binary");
 			response.end();
 		};
 		FileIO.readImage("./images/demo.jpg", recall);
+	},
+	error: function(request, response) {
+		var recall = getRecall(request, response);
+		FileIO.read("./views/404.html", recall);
 	}
 };

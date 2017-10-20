@@ -4,7 +4,6 @@ var router = require("./router");
 var utils = require("./modules/utils");
 
 http.createServer(function(request, response) {
-	// filter second request
 	if (request.url !== "/favicon.ico") {
 		console.log(utils.getCurrentTime(), request.url);
 
@@ -12,9 +11,10 @@ http.createServer(function(request, response) {
 		pathname = pathname.replace(/\//, '');
 
 		try {
-			router[pathname](request, response);	
+			router[pathname](request, response);
 		} catch(error) {
 			console.log("pathname: " + pathname + " is not exist!");
+			router.error(request, response);
 		}
 		
 	}

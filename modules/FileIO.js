@@ -6,15 +6,12 @@ module.exports = {
 			if (error) {
 				console.log("read file: " + path + " failed, error: " + error);
 			} else {
-				// console.log(data);
-				console.log("async method over!");
 				recall(data);
 			}
 		});
 	},
 	readSync: function(path) {
 		var data = fs.readFileSync(path, "utf-8");
-		console.log("sync method over!");
 		return data;
 	},
 	write: function(path, data) {
@@ -27,7 +24,6 @@ module.exports = {
 	},
 	writeSync: function(path, data) {
 		fs.writeFileSync(path, data);
-		console.log("It's Synchronously saved!")
 	},
 	readImage: function(path, recall) {
 		fs.readFile(path, "binary", function(error, data) {
